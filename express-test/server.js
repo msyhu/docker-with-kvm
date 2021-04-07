@@ -77,4 +77,11 @@ app.get("/api/io/:id", (req, res) => {
 	res.send([endTime-startTime]);
 });
 
+app.get("/api/copyfile", (req, res) => {
+	let startTime = new Date().getTime();
+	fs.createReadStream('./source.txt').pipe(fs.createWriteStream('./destination.txt'));
+	let endTime = new Date().getTime();
+	res.send([endTime-startTime]);
+});
+
 app.listen(PORT_NUM, () => console.log('start'));
