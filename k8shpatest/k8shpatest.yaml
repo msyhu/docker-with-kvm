@@ -12,15 +12,17 @@ spec:
     metadata:
       labels:
         app: k8shpatest
+      annotations:
+        prometheus.io/scrape: "true"
     spec:
       containers:
       - name: k8shpatest
-        image: zesow/k8shpatest:v1
+        image: zesow/k8shpatest:v8
         resources:
           limits:
-            cpu: 500m
+            cpu: 300m
           requests:
-            cpu: 500m
+            cpu: 300m
 ---
 apiVersion: v1
 kind: Service
