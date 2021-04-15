@@ -83,26 +83,11 @@ app.get("/api/io/:id", (req, res) => {
 
 
 // 문상 add
-app.get("/api/copybigfile", (req, res) => {
+app.get("/api/copyfile/:filename", (req, res) => {
 	let startTime = new Date().getTime();
-	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
-	fs.copyFileSync('bigfile','bigfiledestination');
-	let endTime = new Date().getTime();
-	res.send([endTime-startTime]);
-});
-
-app.get("/api/copymediumfile", (req, res) => {
-	let startTime = new Date().getTime();
-	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
-	fs.copyFileSync('mediumfile','mediumfiledestination');
-	let endTime = new Date().getTime();
-	res.send([endTime-startTime]);
-});
-
-app.get("/api/copysmallfile", (req, res) => {
-	let startTime = new Date().getTime();
-	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
-	fs.copyFileSync('smallfile','smallfiledestination');
+	let filename = req.params.filename;
+	
+	fs.copyFileSync(filename, 'copied' + filename);
 	let endTime = new Date().getTime();
 	res.send([endTime-startTime]);
 });
