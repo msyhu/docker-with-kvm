@@ -9,8 +9,10 @@ const PORT_NUM = process.argv[2];
 const express = require("express");
 const fs = require('fs');
 const app = express();
+const axios = require("axios");
 
 let bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
 app.get("/api/cpu/:id", (req, res) => {
@@ -77,11 +79,90 @@ app.get("/api/io/:id", (req, res) => {
 	res.send([endTime-startTime]);
 });
 
-app.get("/api/copyfile", (req, res) => {
+
+
+
+// 문상 add
+app.get("/api/copybigfile", (req, res) => {
 	let startTime = new Date().getTime();
-	fs.createReadStream('./source.txt').pipe(fs.createWriteStream('./destination.txt'));
+	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
+	fs.copyFileSync('bigfile','bigfiledestination');
 	let endTime = new Date().getTime();
 	res.send([endTime-startTime]);
+});
+
+app.get("/api/copymediumfile", (req, res) => {
+	let startTime = new Date().getTime();
+	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
+	fs.copyFileSync('mediumfile','mediumfiledestination');
+	let endTime = new Date().getTime();
+	res.send([endTime-startTime]);
+});
+
+app.get("/api/copysmallfile", (req, res) => {
+	let startTime = new Date().getTime();
+	// fs.createReadStream('./bigfile').pipe(fs.createWriteStream('./destination'));
+	fs.copyFileSync('smallfile','smallfiledestination');
+	let endTime = new Date().getTime();
+	res.send([endTime-startTime]);
+});
+
+app.get("/api/justreadfile", (req, res) => {
+	let startTime = new Date().getTime();
+	
+	fs.readFile('./source.txt', 'utf8', function(err, data){
+		console.log('complete read!');
+	});
+
+	let endTime = new Date().getTime();
+	res.send([endTime-startTime]);
+});
+
+function downloadfile(url) {
+
+	console.log(url);
+
+	return axios.get(url, {responseType: "stream"} );
+}
+
+app.post("/api/downloadandmakefile", (req, res) => {
+	let startTime = new Date().getTime();
+	console.log("startTime", startTime);
+	
+  downloadfile(req.body.url)  
+	.then(response => {  
+	// Saving file to working directory  
+		console.log('piped!');
+    response.data.pipe(fs.createWriteStream("ultraviolet-wallpaper.jpg"));
+	})
+	.then(response => {
+		let finalTime = new Date().getTime() - startTime;
+		console.log("final ", finalTime);
+		return res.send([finalTime]);
+	})
+	.catch(err => {
+		console.log(err)
+		return res.sendStatus(404);
+	});
+
+});
+
+app.get("/api/justdownloadfile", (req, res) => {
+	let startTime = new Date().getTime();
+
+  axios.get('http://free4kwallpapers.com/uploads/originals/2019/11/13/ultraviolet-wallpaper.jpg', {responseType: "stream"} )  
+  .catch(error => {  
+    console.log(error);  
+	});  
+
+	let endTime = new Date().getTime();
+
+	return res.send([endTime-startTime]);
+});
+
+app.get("/api/sendimage", (req, res) => {
+
+	return res.sendFile(__dirname + '/ultraviolet-wallpaper.jpg');
 });
 
 app.listen(PORT_NUM, () => console.log('start'));
