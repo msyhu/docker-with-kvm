@@ -1,39 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8shpatest
+  name: k8shpatest_for_iointensive
   namespace: k8shpatest
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8shpatest
+      app: k8shpatest_for_iointensive
   template:
     metadata:
       labels:
-        app: k8shpatest
+        app: k8shpatest_for_iointensive
       annotations:
         prometheus.io/scrape: "true"
     spec:
       containers:
-      - name: k8shpatest
-        image: zesow/k8shpatest:v8
+      - name: k8shpatest_for_iointensive
+        image: zesow/k8shpatest:v8.1
         resources:
           limits:
-            cpu: 300m
+            cpu: 200m
           requests:
-            cpu: 300m
+            cpu: 200m
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: k8shpatest
+  name: k8shpatest_for_iointensive
   namespace: k8shpatest
 spec:
   type: NodePort
   selector:
-    app: k8shpatest
+    app: k8shpatest_for_iointensive
   ports:
   - port: 3000
     targetPort: 3000
-    nodePort: 30001
+    nodePort: 30002
